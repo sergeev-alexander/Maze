@@ -1,25 +1,29 @@
 package maze.service;
 
-import maze.model.Point;
 import maze.model.Node;
+import maze.model.Point;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;
 
 public class Service {
 
+    // Stores the moves of the directions of adjacent cells
     private static final int[] columnDirections = {0, -1, 1, 0};
     private static final int[] rowDirections = {-1, 0, 0, 1};
 
-    private int ROW;
-    private int COLUMN;
-    // Stores the moves of the directions of adjacent cells
+    private final int ROW;
+    private final int COLUMN;
 
-    private Point start;
-    private Point finish;
+    private final Point start;
+    private final Point finish;
 
-    // Keeps track of whether finish is reached or not
-    private boolean isFinishReached = false;
+    public Service(int ROW, int COLUMN, Point start, Point finish) {
+        this.ROW = ROW;
+        this.COLUMN = COLUMN;
+        this.start = start;
+        this.finish = finish;
+    }
 
     // Check if the given cell is valid or not
     private boolean isValid(int row, int column) {
@@ -36,13 +40,13 @@ public class Service {
             Arrays.fill(dd, -1);
 
         // Distance of source cell is 0
-        distances[start.getX()][start.getY()] = 0;
+        distances[start.x()][start.y()] = 0;
 
         // Initialize a visited array
         boolean[][] visited = new boolean[ROW][COLUMN];
 
         // Mark source cell as visited
-        visited[start.getX()][start.getY()] = true;
+        visited[start.x()][start.y()] = true;
 
         // Create a queue for BFS
         ArrayDeque<Node> queue = new ArrayDeque<>();
@@ -58,17 +62,17 @@ public class Service {
 
             // Deque front of the queue
             Node current = queue.removeFirst();
-            Point point = current.getPoint();
+            Point point = current.point();
 
             // If the finish cell is reached, then find the path
-            if (point.getX() == finish.getX() && point.getY() == finish.getY()) {
+            if (point.x() == finish.x() && point.y() == finish.y()) {
                 return restorePath(distances, current);
             }
 
             // Explore all adjacent directions
             for (int i = 0; i < 4; i++) {
-                int row = point.getX() + rowDirections[i];
-                int column = point.getY() + columnDirections[i];
+                int row = point.x() + rowDirections[i];
+                int column = point.y() + columnDirections[i];
 
                 // If the current cell is valid cell and can be traversed
                 if (isValid(row, column) && (matrix[row][column] == 0) && !visited[row][column]) {
@@ -77,11 +81,11 @@ public class Service {
                     visited[row][column] = true;
 
                     // Enqueue the adjacent cells
-                    Node adjacentCell = new Node(new Point(row, column), current.getDistance() + 1);
+                    Node adjacentCell = new Node(new Point(row, column), current.distance() + 1);
                     queue.addLast(adjacentCell);
 
                     // Update the distances of the adjacent cells
-                    distances[row][column] = current.getDistance() + 1;
+                    distances[row][column] = current.distance() + 1;
                 }
             }
         }
@@ -89,19 +93,19 @@ public class Service {
     }
 
     public String restorePath(int[][] distances, Node current) {
-        int x = current.getPoint().getX();
-        int y = current.getPoint().getY();
-        int distance = current.getDistance();
-        Point point = current.getPoint();
+        int x = current.point().x();
+        int y = current.point().y();
+        int distance = current.distance();
+        Point point = current.point();
 
         // Assign the distances of destination to the distances matrix
-        distances[point.getX()][point.getY()] = distance;
+        distances[point.x()][point.y()] = distance;
 
         // Stores the shortest path
         StringBuilder path = new StringBuilder();
 
         // Iterate until start is reached
-        while (x != start.getX() || y != start.getY()) {
+        while (x != start.x() || y != start.y()) {
 
             // Append D
             if (x > 0 && distances[x - 1][y] == distance - 1) {
