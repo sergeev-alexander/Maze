@@ -1,30 +1,6 @@
 package maze.model;
 
-public class Node {
-
-    private Point point;
-    private int distance;
-
-    public Node(Point point, int distance) {
-        this.point = point;
-        this.distance = distance;
-    }
-
-    public Point getPoint() {
-        return point;
-    }
-
-    public void setPoint(Point point) {
-        this.point = point;
-    }
-
-    public int getDistance() {
-        return distance;
-    }
-
-    public void setDistance(int distance) {
-        this.distance = distance;
-    }
+public record Node(Point point, int distance) {
 
     @Override
     public String toString() {
